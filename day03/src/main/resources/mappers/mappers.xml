@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiyun.day03.dao.StudentDao">
+    <insert id="add">
+        insert into student values (0,#{name},#{age},#{dz},#{dh},#{did})
+    </insert>
+    <update id="edit">
+        update student set name=#{name} where id=#{id}
+    </update>
+    <delete id="delete">
+        delete from student where id=#{id}
+    </delete>
+    <select id="findAll" resultType="com.jiyun.day03.pojo.Student">
+        select id,student.name name,age,dz,dh,dept.name dname,dept.did did from student,dept where student.`did`=dept.`did`
+    </select>
+</mapper>

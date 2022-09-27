@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/js/vue.js" type="test/javascript"></script>
+    <!-- axios 调用我们后台的接口-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<script>
+    var app = new Vue({
+        el:'#student',
+        data: {
+            tableData: [],
+            dialogFormVisible: false,
+            dialogUpdateFormVisible:false,
+            formLabelWidth:'120px',
+            student:{
+                stuName:'',
+                stuAge:'',
+                cls:{
+                    clsId:''
+                },
+                stuOrigin:'',
+                stuAddress:'',
+                stuPhone:'',
+                stuId:''
+            }
+        },
+        methods:{
+            handleClick:function(row) {
+                console.log(row);
+                app.dialogUpdateFormVisible=true;
+                app.student.stuId=row.stuId;
+                app.student.stuName=row.stuName;
+                app.student.stuAge=row.stuAge;
+                app.student.cls.clsId=row.cls.clsId;
+                app.student.stuOrigin=row.stuOrigin;
+                app.student.stuAddress=row.stuAddress;
+                app.student.stuPhone=row.stuPhone;
+            },
+            deleteClick:function(row) {
+                axios.post('http://localhost:8080/student/deleteStudent/'+row.stuId)
+                    .then(function (response) {
+                        app.dialogFormVisible = false
+                        app.reload();
+                    }).catch(function (error) {
+                    console.log(error);
+                })
+            },
+            rest:function(){
+                app.dialogFormVisible=true;
+                app.student.stuName='';
+                app.student.stuAge='';
+                app.student.cls.clsId='';
+                app.student.stuOrigin='';
+                app.student.stuAddress='';
+                app.student.stuPhone='';
+            },
+            save:function () {
+                axios.post('http://localhost:8080/student/addStudent/',app.student)
+                    .then(function (response) {
+                        app.dialogFormVisible = false
+                        app.reload();
+                    }).catch(function (error) {
+                    console.log(error);
+                })
+            },
+            update:function () {
+                axios.post('http://localhost:8080/student/updateStudent/',app.student)
+                    .then(function (response) {
+                        app.dialogUpdateFormVisible = false
+                        app.reload();
+                    }).catch(function (error) {
+                    console.log(error);
+                })
+            },
+            reload:function () {
+                axios.get('http://localhost:8080/student/findAll')
+                    .then(function (response) {
+                        app.tableData=response.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        },
+        created:function () {
+            axios.get('http://localhost:8080/student/findAll')
+                .then(function (response) {
+                    app.tableData=response.data
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    })
+</script>
+</body>
+</html>
