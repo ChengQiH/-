@@ -1,7 +1,7 @@
-package com.jiyun.day02.controller;
+package com.jiyun.day03.controller;
 
-import com.jiyun.day02.pojo.Student;
-import com.jiyun.day02.service.StudentService;
+import com.jiyun.day03.pojo.Student;
+import com.jiyun.day03.service.serviceimpl.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,47 +12,46 @@ import java.util.List;
 @RestController
 public class StudentController {
     @Autowired
-    private StudentService studentService;
+    StudentService studentService;
     @RequestMapping("findAll")
-    public Object indAll(){
-        List<Student> list=studentService.findAll();
-        return list;
-    }0
+    public List<Student> findAll(){
+         List<Student> all=studentService.findAll();
+        return all;
+    }
     @RequestMapping("add")
-    public Object add(Student student){
-        Student stu = new Student();
-        stu.setId(2);
-        stu.setName("张三");
-        stu.setAge(10);
-        stu.setDz("北京");
-        stu.setDh("123456");
-        int nt=studentService.add(stu);
-        if (nt>0){
+    public Object add(){
+        Student student1=new Student();
+        student1.setName("王五");
+        student1.setAge(12);
+        student1.setDz("上海");
+        student1.setDh("13654987");
+        student1.setDid(1);
+        student1.setDname("人工智能");
+        int s=studentService.add(student1);
+        if(s>0){
             return "成功";
         }else {
             return "失败";
         }
-
     }
     @RequestMapping("edit")
-    public Object edit(Student student){
-        Student stu = new Student();
-        stu.setId(1);
-        stu.setName("张三");
-        int nt=studentService.edit(stu);
-        if (nt>0){
+    public Object edit(){
+        Student student1 = new Student();
+        student1.setId(3);
+        student1.setName("wwwwww");
+        int s=studentService.edit(student1);
+        if (s>0){
             return "成功";
         }else {
             return "失败";
         }
     }
     @RequestMapping("delete")
-    public Object delete(Integer id){
-        int sss=studentService.delete(1);
-                
-        if (sss>0){
+    public Object delete(Integer id) {
+        int sss = studentService.delete(3);
+        if (sss > 0) {
             return "成功";
-        }else {
+        } else {
             return "失败";
         }
     }
