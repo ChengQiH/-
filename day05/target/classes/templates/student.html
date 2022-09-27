@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"> </script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="student">
+    <template>
+        <el-table
+                :data="tableData"
+                border
+                style="width: 100%">
+            <el-table-column
+                    prop="stuId"
+                    label="编号"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="stuName"
+                    label="姓名"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="cls.clsName"
+                    label="班级"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="stuAddress"
+                    label="地址"
+                    width="300">
+            </el-table-column>
+            <el-table-column
+                    label="操作"
+                    width="100">
+                <template slot-scope="scope">
+                    <el-button @click="handleClick(scope.row)" type=·"primary" icon="el-icon-edit" circle></el-button>
+                    <el-button @click="deleteClick(scope.row)" type="primary" icon="el-icon-delete" circle></el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+    <!-- Form -->
+    <el-button type="primary" @click="rest" round>添加</el-button>
+    <el-dialog title="添加学生" :visible.sync="dialogFormVisible">
+        <el-form :model="student">
+            <el-form-item label="学生姓名" :label-width="formLabelWidth">
+                <el-input v-model="student.stuName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生年龄" :label-width="formLabelWidth">
+                <el-input v-model="student.stuAge" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="班级" :label-width="formLabelWidth">
+                <el-select v-model="student.cls.clsId" placeholder="请选择班级">
+                    <el-option label="H2201B" value="1"></el-option>
+                    <el-option label="H2201A" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="学生籍贯" :label-width="formLabelWidth">
+                <el-input v-model="student.stuOrigin" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生地址" :label-width="formLabelWidth">
+                <el-input v-model="student.stuAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生电话" :label-width="formLabelWidth">
+                <el-input v-model="student.stuPhone" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="save">确定</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog title="修改学生" :visible.sync="dialogUpdateFormVisible">
+        <el-form :model="student">
+            <el-form-item label="学生姓名" :label-width="formLabelWidth">
+                <el-input v-model="student.stuName" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生年龄" :label-width="formLabelWidth">
+                <el-input v-model="student.stuAge" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="班级" :label-width="formLabelWidth">
+                <el-select v-model="student.cls.clsId" placeholder="请选择班级">
+                    <el-option label="H2201B" value="1"></el-option>
+                    <el-option label="H2201A" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="学生籍贯" :label-width="formLabelWidth">
+                <el-input v-model="student.stuOrigin" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生地址" :label-width="formLabelWidth">
+                <el-input v-model="student.stuAddress" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="学生电话" :label-width="formLabelWidth">
+                <el-input v-model="student.stuPhone" autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogUpdateFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="update">确定</el-button>
+        </div>
+    </el-dialog>
+</div>
+<script>
+    var app=new Vue({
+        el:'#student',
+        data:{
+            tableData:[],
+            dialogFormVisible:false,
+            dialogUpdateFormVisible:false,
+            formLabelWidth:'120px',
+            student:{
+                stuName:'',
+                stuAge:'',
+                cls:{
+                    clsId:''
+                },
+                stuOrigin:'',
+                stuAddress:'',
+                stuPhone:''
+            }
+        },
+        methods:{
+            handleClick:function (row) {
+                console.log(row)
+                app.dialogUpdateFormVisible=true;
+                app.student.stuId=row.stuId;
+                app.student.stuName=row.stuName;
+                app.student.stuAge=row.stuAge;
+                app.student.cls.clsId=row.cls.clsId;
+                app.student.stuOrigin=row.stuOrigin;
+                app.student.stuAddress=row.stuAddress;
+                app.student.stuPhone=row.stuPhone;
+            },
+            deleteClick:function (row) {
+                console.log(row)
+                axios.post("http://localhost:8080/student/delete/"+row.stuId).then(function (response) {
+                    app.dialogFormVisible=false
+                    app.reload();
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
+            rest:function(){
+              app.dialogFormVisible=true;
+              app.student.stuName='';
+              app.student.stuAge='';
+              app.student.cls.clsId='';
+              app.student.stuOrigin='';
+              app.student.stuAddress='';
+              app.student.stuPhone='';
+            },
+            save:function () {
+                axios.post("http://localhost:8080/student/add",app.student).then(function (response) {
+                    app.dialogFormVisible=false
+                    app.reload();
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
+            update:function () {
+                axios.post("http://localhost:8080/student/edit",app.student).then(function (response) {
+                    app.dialogUpdateFormVisible=false
+                    app.reload();
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            },
+            reload:function () {
+                axios.post("http://localhost:8080/student/findAll").then(function (response) {
+                    app.tableData=response.data;
+                }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+        },
+        created:function () {
+            axios.post("http://localhost:8080/student/findAll").then(function (response) {
+                app.tableData=response.data;
+            }).catch(function (error) {
+                console.log(error)
+            })
+        }
+    })
+</script>
+</body>
+</html>

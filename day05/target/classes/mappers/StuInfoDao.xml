@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.day05.dao.StuInfoDao">
+    <resultMap id="studentMap" type="com.example.day05.pojo.StuInfo">
+        <result property="student" column="student" javaType="Student"  typeHandler="com.example.day05.dao.handle.JsonTypeHandler"/>
+    </resultMap>
+    <select id="stuInfoAll" resultMap="studentMap">
+    select stuid,student from stuInfo
+    </select>
+    <insert id="addStuInfo" parameterType="com.example.day05.pojo.StuInfo">
+    insert into stuInfo values(#{stuid},#{student, typeHandler=com.example.day05.dao.handle.JsonTypeHandler})
+    </insert>
+</mapper>

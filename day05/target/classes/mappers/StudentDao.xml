@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.day05.dao.StudentDao">
+    <resultMap id="studentMap" type="com.example.day05.pojo.Student">
+        <id property="stuId" column="stuId"></id>
+        <result property="stuName" column="stuName"></result>
+        <result property="stuName" column="stuName"></result>
+        <result property="stuAge" column="stuAge"></result>
+        <result property="stuOrigin" column="stuOrigin"></result>
+        <result property="stuAddress" column="stuAddress"></result>
+        <result property="stuPhone" column="stuPhone"></result>
+        <association property="cls" javaType="com.example.day05.pojo.Classes">
+            <result property="clsId" column="stuClsId"></result>
+            <result property="clsName" column="clsName"></result>
+        </association>
+    </resultMap>
+    <select id="findAll" resultMap="studentMap">
+    select stuId,stuName,stuAge,classes.clsName,stuOrigin,stuAddress,stuPhone from student,classes
+    where student.`stuClsId`=classes.`clsId`
+    </select>
+    <insert id="add" parameterType="com.example.day05.pojo.Student">
+    insert into student values(null,#{stuName},#{stuAge},#{cls.clsId},#{stuOrigin},#{stuAddress},#{stuPhone})
+    </insert>
+    <update id="edit" parameterType="com.example.day05.pojo.Student">
+        update student set stuName=#{stuName},stuPhone=#{stuPhone} where stuId=#{stuId}
+    </update>
+    <delete id="delete" parameterType="integer">
+        delete from student where stuId=#{stuId}
+    </delete>
+</mapper>
